@@ -1,0 +1,97 @@
+@import url('https://googleapis.com');
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    color: red;
+    background-image: url('images/beck-fon.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.header {
+    background-color: #5B932C;
+    padding: 3px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.namegeme {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.sound-btn {
+    position: absolute;
+    left: 0px;
+    width: 100px;
+    height: auto;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.logo-img {
+    width: 200px;
+    height: auto;
+    object-fit: contain;
+}
+
+
+.audimg {
+    display: flex;
+    height: 50px;
+    width: 50px;
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 75px;
+}
+
+.score-container {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 48px;
+    color: #FFD700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+}
+
+.coin-icon {
+    color: #FFD700;
+}
+
+.apple {
+    width: 100%;
+    text-align: center;
+    margin-top: 100px;
+}
+
+.apple img {
+    width: 400px;
+    height: auto;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-drag: none;
+    transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.apple img:active {
+    transform: scale(0.90);
+    transition: transform 0.03s ease;
+}
