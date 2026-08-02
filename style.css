@@ -21,7 +21,7 @@ body {
 }
 
 .play img {
-    width: 200px;
+    width: width: 100%;
     height: auto;
     cursor: pointer;
     transition: transform 0.1s ease;
