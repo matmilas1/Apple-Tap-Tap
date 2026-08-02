@@ -1,0 +1,232 @@
+@import url('https://googleapis.com');
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    color: red;
+    background-image: url('images/beck-fon.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.header {
+    background-color: #5B932C;
+    padding: 3px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.namegeme {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.sound-btn {
+    position: absolute;
+    left: 0px;
+    width: 100px;
+    height: auto;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.logo-img {
+    width: 200px;
+    height: auto;
+    object-fit: contain;
+}
+
+
+.audimg {
+    display: flex;
+    height: 50px;
+    width: 50px;
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 75px;
+}
+
+.score-container {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 48px;
+    color: #FFD700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+}
+
+.coin-icon {
+    color: #FFD700;
+}
+
+.apple {
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.apple img {
+    width: 400px;
+    height: auto;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-drag: none;
+    transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.apple img:active {
+    transform: scale(0.90);
+    transition: transform 0.03s ease;
+}
+
+.click-particle {
+    position: absolute;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 32px;
+    color: #FFD700;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+    user-select: none;
+    animation: floatUpAndFade 0.6s ease-out forwards;
+}
+
+@keyframes floatUpAndFade {
+    0% {
+        transform: translate(-50%, -50%) translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) translateY(-100px) scale(0.8);
+        opacity: 0;
+    }
+}
+
+/* інвентар */
+
+.inv-image-btn {
+    width: 180px;
+    height: auto;
+    cursor: pointer;
+    margin-top: 30px;
+    user-select: none;
+    -webkit-user-drag: none;
+    transition: transform 0.1s ease;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.inv-image-btn:active {
+    transform: scale(0.92);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #2c3e50;
+    padding: 25px;
+    border-radius: 20px;
+    width: 80%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    font-family: 'Fredoka', sans-serif;
+    margin-bottom: 20px;
+}
+
+.close-btn {
+    font-size: 36px;
+    cursor: pointer;
+    color: #aaa;
+}
+
+.close-btn:hover {
+    color: white;
+}
+
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 15px;
+}
+
+.inv-item {
+    width: 100px;
+    height: 130px;
+    background-color: #000000;
+    border: 3px solid #34495e;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: not-allowed;
+    position: relative;
+    box-sizing: border-box;
+    padding: 5px;
+}
+
+.inv-item.unlocked {
+    cursor: pointer;
+    border-color: #FFD700;
+    background-color: #34495e;
+}
+
+.inv-item.active-skin {
+    border-color: #5B932C;
+    background-color: #1e272e;
+}
+
+.inv-item img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.inv-item span {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 12px;
+    color: white;
+    margin-top: 5px;
+    text-align: center;
+}
+
