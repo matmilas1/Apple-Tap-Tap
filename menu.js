@@ -8,63 +8,71 @@ const firebaseConfig = {
   measurementId: "G-K3PL0CM2L7"
 };
 
+let isFirebaseInitialized = false;
+
+function ensureFirebase() {
+    if (!window.firebase || !window.firebase.auth) return false;
+    if (!isFirebaseInitialized) {
+        window.firebase.initializeApp(firebaseConfig);
+        isFirebaseInitialized = true;
+    }
+    return true;
+}
+
 window.login = function() {
-    if (window.firebase && window.firebase.auth) {
+    if (ensureFirebase()) {
         const provider = new window.firebase.auth.GoogleAuthProvider();
         window.firebase.auth().signInWithRedirect(provider).catch(e => { 
             alert("Login failed! " + e.message); 
         });
     } else {
-        alert("Firebase is still loading, please wait a second...");
+        alert("Server connection is slow. Please click again in 1 second!");
     }
 };
 
-function initMenu() {
-    if (!window.firebase || !window.firebase.auth) {
-        setTimeout(initMenu, 100);
-        return;
-    }
-
-    window.firebase.initializeApp(firebaseConfig);
-    const auth = window.firebase.auth();
-
+window.addEventListener('DOMContentLoaded', () => {
     const playBtn = document.getElementById('menu-play-btn');
     const googleBtn = document.getElementById('menu-google-btn');
     const statusText = document.getElementById('menu-status-text');
 
-    auth.getRedirectResult().catch((e) => { 
-        console.error("Redirect login error:", e); 
-    });
+    let checkInterval = setInterval(() => {
+        if (ensureFirebase()) {
+            clearInterval(checkInterval);
+            const auth = window.firebase.auth();
 
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            if (playBtn) {
-                playBtn.disabled = false;
-                playBtn.textContent = "Play 🍏";
-            }
-            if (statusText) {
-                statusText.style.color = "#00ff88";
-                statusText.textContent = `Welcome, ${user.displayName || "Player"}! Click 'Play' to start the beta.`;
-            }
-            if (googleBtn) googleBtn.style.display = "none";
-        } else {
-            if (playBtn) {
-                playBtn.disabled = true;
-                playBtn.textContent = "Play 🍏 (Login first)";
-            }
-            if (statusText) {
-                statusText.style.color = "#bdc3c7";
-                statusText.textContent = "Please log in with Google to play the beta!";
-            }
-            if (googleBtn) googleBtn.style.display = "block";
+            auth.getRedirectResult().catch((e) => { 
+                console.error("Redirect login error:", e); 
+            });
+
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    if (playBtn) {
+                        playBtn.disabled = false;
+                        playBtn.textContent = "Play 🍏";
+                    }
+                    if (statusText) {
+                        statusText.style.color = "#00ff88";
+                        statusText.textContent = `Welcome, ${user.displayName || "Player"}! Click 'Play' to start the beta.`;
+                    }
+                    if (googleBtn) googleBtn.style.display = "none";
+                } else {
+                    if (playBtn) {
+                        playBtn.disabled = true;
+                        playBtn.textContent = "Play 🍏 (Login first)";
+                    }
+                    if (statusText) {
+                        statusText.style.color = "#bdc3c7";
+                        statusText.textContent = "Please log in with Google to play the beta!";
+                    }
+                    if (googleBtn) googleBtn.style.display = "block";
+                }
+            });
         }
-    });
+    }, 100);
 
     if (playBtn) {
         playBtn.addEventListener('click', () => { 
             window.location.href = "game.html"; 
         });
     }
-}
-
-initMenu();
+});
