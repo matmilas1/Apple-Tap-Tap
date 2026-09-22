@@ -8,9 +8,20 @@ const firebaseConfig = {
   measurementId: "G-K3PL0CM2L7"
 };
 
-function startMenuWhenReady() {
+window.login = function() {
+    if (window.firebase && window.firebase.auth) {
+        const provider = new window.firebase.auth.GoogleAuthProvider();
+        window.firebase.auth().signInWithRedirect(provider).catch(e => { 
+            alert("Login failed! " + e.message); 
+        });
+    } else {
+        alert("Firebase is still loading, please wait a second...");
+    }
+};
+
+function initMenu() {
     if (!window.firebase) {
-        setTimeout(startMenuWhenReady, 1000);
+        setTimeout(initMenu, 200);
         return;
     }
 
@@ -49,13 +60,6 @@ function startMenuWhenReady() {
         }
     });
 
-    window.login = function() {
-        const provider = new window.firebase.auth.GoogleAuthProvider();
-        auth.signInWithRedirect(provider).catch(e => { 
-            alert("Login failed! " + e.message); 
-        });
-    };
-
     if (playBtn) {
         playBtn.addEventListener('click', () => { 
             window.location.href = "game.html"; 
@@ -63,4 +67,5 @@ function startMenuWhenReady() {
     }
 }
 
-startMenuWhenReady();
+
+initMenu();
