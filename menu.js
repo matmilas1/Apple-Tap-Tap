@@ -8,46 +8,64 @@ const firebaseConfig = {
   measurementId: "G-K3PL0CM2L7"
 };
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-
-const playBtn = document.getElementById('menu-play-btn');
-const googleBtn = document.getElementById('menu-google-btn');
-const statusText = document.getElementById('menu-status-text');
-
-auth.getRedirectResult().catch((e) => {
-    console.error("Redirect login error:", e);
-});
-
-auth.onAuthStateChanged((user) => {
-    if (user) {
-        playBtn.disabled = false;
-        playBtn.textContent = "Play 🍏";
-        statusText.style.color = "#00ff88";
-        statusText.textContent = `Welcome, ${user.displayName || "Player"}! Click 'Play' to start the beta.`;
-        if (googleBtn) googleBtn.style.display = "none";
-    } else {
-        playBtn.disabled = true;
-        playBtn.textContent = "Play 🍏 (Login first)";
-        statusText.style.color = "#bdc3c7";
-        statusText.textContent = "Please log in with Google to play the beta!";
-        if (googleBtn) googleBtn.style.display = "block";
+// Заставляем код дождаться полной загрузки HTML и всех CDN-библиотек Firebase
+window.addEventListener('DOMContentLoaded', () => {
+    
+    if (!window.firebase) {
+        console.error("Firebase library failed to load from CDN!");
+        return;
     }
-});
 
-if (googleBtn) {
-    googleBtn.addEventListener('click', () => {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithRedirect(provider).catch(e => {
-            alert("Login failed! " + e.message);
-        });
+    // Инициализируем только тогда, когда объект гарантированно создан в памяти
+    window.firebase.initializeApp(firebaseConfig);
+    const auth = window.firebase.auth();
+
+    const playBtn = document.getElementById('menu-play-btn');
+    const googleBtn = document.getElementById('menu-google-btn');
+    const statusText = document.getElementById('menu-status-text');
+
+    auth.getRedirectResult().catch((e) => {
+        console.error("Redirect login error:", e);
     });
-}
 
-if (playBtn) {
-    playBtn.addEventListener('click', () => {
-        if (!playBtn.disabled) {
-            window.location.href = "game.html";
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            if (playBtn) {
+                playBtn.disabled = false;
+                playBtn.textContent = "Play 🍏";
+            }
+            if (statusText) {
+                statusText.style.color = "#00ff88";
+                statusText.textContent = `Welcome, ${user.displayName || "Player"}! Click 'Play' to start the beta.`;
+            }
+            if (googleBtn) googleBtn.style.display = "none";
+        } else {
+            if (playBtn) {
+                playBtn.disabled = true;
+                playBtn.textContent = "Play 🍏 (Login first)";
+            }
+            if (statusText) {
+                statusText.style.color = "#bdc3c7";
+                statusText.textContent = "Please log in with Google to play the beta!";
+            }
+            if (googleBtn) googleBtn.style.display = "block";
         }
     });
-}
+
+    if (googleBtn) {
+        googleBtn.addEventListener('click', () => {
+            const provider = new window.firebase.auth.GoogleAuthProvider();
+            auth.signInWithRedirect(provider).catch(e => {
+                alert("Login failed! " + e.message);
+            });
+        });
+    }
+
+    if (playBtn) {
+        playBtn.addEventListener('click', () => {
+            if (!playBtn.disabled) {
+                window.location.href = "game.html";
+            }
+        });
+    }
+});
