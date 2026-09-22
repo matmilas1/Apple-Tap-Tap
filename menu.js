@@ -1,30 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apple TapTap - Main Menu</title>
-    <link rel="stylesheet" href="menu.css">
-</head>
-<body>
+const firebaseConfig = {
+  apiKey: "AIzaSyCOceNGRA6w7Sjh_fZiENd6HSnp0Sr_-Wg",
+  authDomain: "://firebaseapp.com",
+  projectId: "apple-tap-tap-2df34",
+  storageBucket: "apple-tap-tap-2df34.firebasestorage.app",
+  messagingSenderId: "566834170805",
+  appId: "1:566834170805:web:6e6e54c48c96fbba74a7fc",
+  measurementId: "G-K3PL0CM2L7"
+};
 
-    <div class="menu-overlay">
-        <div class="menu-content">
-            <img src="images/Apple tap tap.png" class="menu-logo" alt="Apple Tap-Tap">
-            
-            <div class="menu-buttons">
-                <button id="menu-play-btn" class="menu-btn play" disabled>Play 🍏 (Login first)</button>
-                <button id="menu-google-btn" class="menu-btn google" onclick="login()">Login with Google 🌐</button>
-            </div>
-            
-            <p id="menu-status-text">Please log in with Google to play the beta!</p>
-        </div>
-    </div>
+function startMenuWhenReady() {
+    if (!window.firebase) {
+        setTimeout(startMenuWhenReady, 1000);
+        return;
+    }
 
-    <script src="https://cloudflare.com"></script>
-    <script src="https://cloudflare.com"></script>
-    
-    <script src="menu.js?v=1"></script>
+    window.firebase.initializeApp(firebaseConfig);
+    const auth = window.firebase.auth();
 
-</body>
-</html>
+    const playBtn = document.getElementById('menu-play-btn');
+    const googleBtn = document.getElementById('menu-google-btn');
+    const statusText = document.getElementById('menu-status-text');
+
+    auth.getRedirectResult().catch((e) => { 
+        console.error("Redirect login error:", e); 
+    });
+
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            if (playBtn) {
+                playBtn.disabled = false;
+                playBtn.textContent = "Play 🍏";
+            }
+            if (statusText) {
+                statusText.style.color = "#00ff88";
+                statusText.textContent = `Welcome, ${user.displayName || "Player"}! Click 'Play' to start the beta.`;
+            }
+            if (googleBtn) googleBtn.style.display = "none";
+        } else {
+            if (playBtn) {
+                playBtn.disabled = true;
+                playBtn.textContent = "Play 🍏 (Login first)";
+            }
+            if (statusText) {
+                statusText.style.color = "#bdc3c7";
+                statusText.textContent = "Please log in with Google to play the beta!";
+            }
+            if (googleBtn) googleBtn.style.display = "block";
+        }
+    });
+
+    window.login = function() {
+        const provider = new window.firebase.auth.GoogleAuthProvider();
+        auth.signInWithRedirect(provider).catch(e => { 
+            alert("Login failed! " + e.message); 
+        });
+    };
+
+    if (playBtn) {
+        playBtn.addEventListener('click', () => { 
+            window.location.href = "game.html"; 
+        });
+    }
+}
+
+startMenuWhenReady();
