@@ -20,13 +20,12 @@ function ensureFirebase() {
 }
 
 window.login = function() {
-    if (ensureFirebase()) {
+    ensureFirebase();
+    if (window.firebase && window.firebase.auth) {
         const provider = new window.firebase.auth.GoogleAuthProvider();
         window.firebase.auth().signInWithRedirect(provider).catch(e => { 
-            alert("Login failed! " + e.message); 
+            console.error("Login failed!", e);
         });
-    } else {
-        alert("Server connection is slow. Please click again in 1 second!");
     }
 };
 
