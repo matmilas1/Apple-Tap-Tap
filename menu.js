@@ -1,6 +1,6 @@
 const firebaseConfig = {
   apiKey: "AIzaSyCOceNGRA6w7Sjh_fZiENd6HSnp0Sr_-Wg",
-  authDomain: "apple-tap-tap-2df34.firebaseapp.com",
+  authDomain: "://firebaseapp.com",
   projectId: "apple-tap-tap-2df34",
   storageBucket: "apple-tap-tap-2df34.firebasestorage.app",
   messagingSenderId: "566834170805",
@@ -8,43 +8,39 @@ const firebaseConfig = {
   measurementId: "G-K3PL0CM2L7"
 };
 
-const auth = window.firebase ? window.firebase.initializeApp(firebaseConfig).auth() : null;
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 
 const playBtn = document.getElementById('menu-play-btn');
 const googleBtn = document.getElementById('menu-google-btn');
 const statusText = document.getElementById('menu-status-text');
 
-if (auth) {
-    auth.getRedirectResult().catch((e) => {
-        console.error("Redirect login error:", e);
-    });
+auth.getRedirectResult().catch((e) => {
+    console.error("Redirect login error:", e);
+});
 
-    auth.onAuthStateChanged((user) => {
-        if (user && !user.isAnonymous) {
-            playBtn.disabled = false;
-            playBtn.textContent = "Play 🍏";
-            statusText.style.color = "#00ff88";
-            statusText.textContent = `Welcome, ${user.displayName || "Player"}! Click 'Play' to start the beta.`;
-            if (googleBtn) googleBtn.style.display = "none";
-        } else {
-            playBtn.disabled = true;
-            playBtn.textContent = "Play 🍏 (Login first)";
-            statusText.style.color = "#bdc3c7";
-            statusText.textContent = "Please log in with Google to play the beta!";
-            if (googleBtn) googleBtn.style.display = "block";
-        }
-    });
-}
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        playBtn.disabled = false;
+        playBtn.textContent = "Play 🍏";
+        statusText.style.color = "#00ff88";
+        statusText.textContent = `Welcome, ${user.displayName || "Player"}! Click 'Play' to start the beta.`;
+        if (googleBtn) googleBtn.style.display = "none";
+    } else {
+        playBtn.disabled = true;
+        playBtn.textContent = "Play 🍏 (Login first)";
+        statusText.style.color = "#bdc3c7";
+        statusText.textContent = "Please log in with Google to play the beta!";
+        if (googleBtn) googleBtn.style.display = "block";
+    }
+});
 
 if (googleBtn) {
     googleBtn.addEventListener('click', () => {
-        if (auth) {
-            const provider = new window.firebase.auth.GoogleAuthProvider();
-            
-            auth.signInWithRedirect(provider).catch(e => {
-                alert("Login failed! " + e.message);
-            });
-        }
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithRedirect(provider).catch(e => {
+            alert("Login failed! " + e.message);
+        });
     });
 }
 
