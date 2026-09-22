@@ -20,8 +20,8 @@ window.login = function() {
 };
 
 function initMenu() {
-    if (!window.firebase) {
-        setTimeout(initMenu, 200);
+    if (!window.firebase || !window.firebase.auth) {
+        setTimeout(initMenu, 100);
         return;
     }
 
@@ -66,6 +66,5 @@ function initMenu() {
         });
     }
 }
-
 
 initMenu();
