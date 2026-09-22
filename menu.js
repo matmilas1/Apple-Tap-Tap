@@ -11,35 +11,24 @@ const firebaseConfig = {
 if (window.firebase) {
     window.firebase.initializeApp(firebaseConfig);
     const auth = window.firebase.auth();
-
     const playBtn = document.getElementById('menu-play-btn');
     const googleBtn = document.getElementById('menu-google-btn');
     const statusText = document.getElementById('menu-status-text');
 
-    auth.getRedirectResult().catch((e) => {
-        console.error("Redirect login error:", e);
-    });
+    auth.getRedirectResult().catch((e) => { console.error(e); });
 
     auth.onAuthStateChanged((user) => {
         if (user) {
-            if (playBtn) {
-                playBtn.disabled = false;
-                playBtn.textContent = "Play 🍏";
-            }
-            if (statusText) {
-                statusText.style.color = "#00ff88";
-                statusText.textContent = `Welcome, ${user.displayName || "Player"}! Click 'Play' to start the beta.`;
-            }
+            playBtn.disabled = false;
+            playBtn.textContent = "Play 🍏";
+            statusText.style.color = "#00ff88";
+            statusText.textContent = `Welcome! Click 'Play' to start.`;
             if (googleBtn) googleBtn.style.display = "none";
         } else {
-            if (playBtn) {
-                playBtn.disabled = true;
-                playBtn.textContent = "Play 🍏 (Login first)";
-            }
-            if (statusText) {
-                statusText.style.color = "#bdc3c7";
-                statusText.textContent = "Please log in with Google to play the beta!";
-            }
+            playBtn.disabled = true;
+            playBtn.textContent = "Play 🍏 (Login first)";
+            statusText.style.color = "#bdc3c7";
+            statusText.textContent = "Please log in with Google to play!";
             if (googleBtn) googleBtn.style.display = "block";
         }
     });
@@ -47,23 +36,13 @@ if (window.firebase) {
     if (googleBtn) {
         googleBtn.addEventListener('click', () => {
             const provider = new window.firebase.auth.GoogleAuthProvider();
-            auth.signInWithRedirect(provider).catch(e => {
-                alert("Login failed! " + e.message);
-            });
+            auth.signInWithRedirect(provider).catch(e => { alert(e.message); });
         });
     }
 
     if (playBtn) {
-        playBtn.addEventListener('click', () => {
-            if (!playBtn.disabled) {
-                window.location.href = "game.html";
-            }
-        });
+        playBtn.addEventListener('click', () => { window.location.href = "game.html"; });
     }
 } else {
-    const statusText = document.getElementById('menu-status-text');
-    if (statusText) {
-        statusText.style.color = "#e74c3c";
-        statusText.textContent = "Critical: Connection to server blocked by network!";
-    }
+    document.getElementById('menu-status-text').textContent = "Server Connection Error!";
 }
