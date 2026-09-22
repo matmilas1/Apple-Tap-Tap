@@ -14,16 +14,18 @@
             
             <div class="menu-buttons">
                 <button id="menu-play-btn" class="menu-btn play" disabled>Play 🍏 (Login first)</button>
-                <button id="menu-google-btn" class="menu-btn google">Login with Google 🌐</button>
+                <!-- 👇 Прив'язали клік до глобального вікна -->
+                <button id="menu-google-btn" class="menu-btn google" onclick="window.login()">Login with Google 🌐</button>
             </div>
             
             <p id="menu-status-text">Please log in with Google to play the beta!</p>
         </div>
     </div>
 
-    <script src="https://cloudflare.com"></script>
-    <script src="https://cloudflare.com"></script>
-    <script src="menu.js"></script>
+    <script src="https://gstatic.com"></script>
+    
+    <!-- Збиваємо кеш новою версією ?v=3 -->
+    <script src="menu.js?v=3"></script>
 
 </body>
 </html>
