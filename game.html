@@ -1,69 +1,101 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>apple-taptap</title>
-</head>
-
-
-<!--     Лінки    -->
-<link rel="stylesheet" href="game.css">
-
-<script src="game.js" defer></script>
-
-<body>
+    <title>Apple TapTap - Beta Server</title>
+    <link rel="stylesheet" href="game.css">
     
+    <!-- ИСПРАВЛЕНО: ПРАВИЛЬНОЕ ПОДКЛЮЧЕНИЕ ОБЛАКА FIREBASE -->
+    <script src="https://gstatic.com"></script>
+    <script src="https://gstatic.com"></script>
+    <script src="https://gstatic.com"></script>
+    
+    <script src="game.js" defer></script>
+</head>
+<body>
 
-<header>
+    <audio id="bg-audio" autoplay loop>
+        <source src="sound/background-music.mp3" type="audio/mpeg">
+    </audio>
 
-<div class="header">
-
-
-<div class="audio">
-    <audio id="bg-audio" loop>
-<source src="sound/background-music.mp3" type="audio/mpeg">
-</audio>
-
-</div>
-
-<div class="namegeme">
-        <img src="images/AUDIO-NET.png" class="sound-btn" id="sound-button" alt="Звук">
-        <img src="images/Apple tap tap.png" class="logo-img" alt="Apple Tap-Tap">
-    </div>
-</div>
-
-</header>
-
-
-<main>
-    <div class="game-container">
-        <div class="score-container">
-            <span id="money-count">0</span>
-            <span class="coin-icon">🍎</span>
-        </div>
-
-        <div class="apple">
-            <img src="images/apple-standr.png" id="main-apple" alt="Apple">
-        </div>
-
-        <img src="images/inv-button.png" id="open-inv-btn" class="inv-image-btn" alt="Inventory">
-    </div>
-
-    <div id="inventory-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>My Inventory</h2>
-                <span id="close-inv-btn" class="close-btn">&times;</span>
+    <header>
+        <div class="namegeme">
+            <div class="sound-box">
+                <img src="images/AUDIO-NET.png" class="sound-btn" id="sound-button" alt="Sound">
             </div>
-            <div id="inventory-grid" class="inventory-grid"></div>
+            <img src="images/Apple tap tap.png" class="logo-img" alt="Apple Tap-Tap">
+            <div class="leaderboard-trigger" id="open-leaderboard-btn">🏆</div>
         </div>
-    </div>
-</main>
+    </header>
 
+    <main>
+        <div class="game-container">
+            
+            <div class="perks-menu">
+                <div class="dice-section">
+                    <div id="rolled-perk-zone" class="rolled-zone"></div>
+                    <img src="images/dice.png" id="roll-dice-btn" class="dice-img" alt="Roll Dice">
+                    <div id="dice-price-display" class="dice-price">100 🍎</div>
+                </div>
+                <div class="slots-container" id="slots-list"></div>
+            </div>
 
+            <div class="clicker-section">
+                <div class="score-container">
+                    <span id="money-count">0</span>
+                    <span class="coin-icon">🍎</span>
+                </div>
+                <div class="apple">
+                    <img src="images/apple-standr.png" id="main-apple" alt="Apple">
+                </div>
+            </div>
 
+            <div class="side-menu">
+                <div class="case-wrapper" id="wrapper-case-p">
+                    <img src="images/case-p.png" class="case-btn" id="case-p" alt="Prismarine Case">
+                    <div class="case-price">1000 🍎</div>
+                </div>
+                
+                <div class="case-wrapper" id="wrapper-case-e">
+                    <img src="images/case-e.png" class="case-btn" id="case-e" alt="Epic Case">
+                    <div class="case-price">500 🍎</div>
+                </div>
+                
+                <div class="case-wrapper" id="wrapper-case-c">
+                    <img src="images/case-c.png" class="case-btn" id="case-c" alt="Common Case">
+                    <div class="case-price">100 🍎</div>
+                </div>
 
+                <img src="images/inv-button.png" id="open-inv-btn" class="inv-image-btn" alt="Inventory">
+            </div>
+
+        </div>
+
+        <div id="inventory-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>My Inventory</h2>
+                    <span id="close-inv-btn" class="close-btn">&times;</span>
+                </div>
+                <div id="inventory-grid" class="inventory-grid"></div>
+            </div>
+        </div>
+
+        <div id="leaderboard-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Global Leaderboard</h2>
+                    <span id="close-leaderboard-btn" class="close-btn">&times;</span>
+                </div>
+                <div class="auth-section">
+                    <button id="google-login-btn" class="google-btn">🌐 Sign In with Google</button>
+                    <p id="player-status-text">Playing as Guest</p>
+                </div>
+                <div class="leaderboard-list" id="leaderboard-players-list"></div>
+            </div>
+        </div>
+    </main>
 
 </body>
 </html>
