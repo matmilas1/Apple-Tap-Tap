@@ -1,6 +1,5 @@
-
 import { initializeApp } from "https://gstatic.com";
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://gstatic.com";
+import { getAuth, signInWithRedirect, GoogleAuthProvider, onAuthStateChanged, getRedirectResult } from "https://gstatic.com";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCOceNGRA6w7Sjh_fZiENd6HSnp0Sr_-Wg",
@@ -12,13 +11,17 @@ const firebaseConfig = {
   measurementId: "G-K3PL0CM2L7"
 };
 
-// Инициализируем новые модули
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 const playBtn = document.getElementById('menu-play-btn');
 const googleBtn = document.getElementById('menu-google-btn');
 const statusText = document.getElementById('menu-status-text');
+
+// Ловим результат возвращения из Google после редиректа
+getRedirectResult(auth).catch((e) => {
+    console.error("Redirect error:", e);
+});
 
 onAuthStateChanged(auth, (user) => {
     if (user && !user.isAnonymous) {
@@ -39,11 +42,11 @@ onAuthStateChanged(auth, (user) => {
 if (googleBtn) {
     googleBtn.addEventListener('click', () => {
         const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider)
-            .catch(e => {
-                console.error(e);
-                alert("Login failed! " + e.message);
-            });
+        // Заменили Popup на безопасный Redirect, который разрешен на GitHub Pages
+        signInWithRedirect(auth, provider).catch(e => {
+            console.error(e);
+            alert("Login failed! " + e.message);
+        });
     });
 }
 
