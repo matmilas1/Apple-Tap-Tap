@@ -8,7 +8,14 @@ const firebaseConfig = {
   measurementId: "G-K3PL0CM2L7"
 };
 
-if (window.firebase) {
+window.onload = function() {
+    if (!window.firebase) {
+        if (document.getElementById('menu-status-text')) {
+            document.getElementById('menu-status-text').textContent = "Critical: Server files not loaded. Reload page!";
+        }
+        return;
+    }
+
     window.firebase.initializeApp(firebaseConfig);
     const auth = window.firebase.auth();
     const playBtn = document.getElementById('menu-play-btn');
@@ -19,30 +26,34 @@ if (window.firebase) {
 
     auth.onAuthStateChanged((user) => {
         if (user) {
-            playBtn.disabled = false;
-            playBtn.textContent = "Play 🍏";
-            statusText.style.color = "#00ff88";
-            statusText.textContent = `Welcome! Click 'Play' to start.`;
+            if (playBtn) {
+                playBtn.disabled = false;
+                playBtn.textContent = "Play 🍏";
+            }
+            if (statusText) {
+                statusText.style.color = "#00ff88";
+                statusText.textContent = `Welcome! Click 'Play' to start the beta.`;
+            }
             if (googleBtn) googleBtn.style.display = "none";
         } else {
-            playBtn.disabled = true;
-            playBtn.textContent = "Play 🍏 (Login first)";
-            statusText.style.color = "#bdc3c7";
-            statusText.textContent = "Please log in with Google to play!";
+            if (playBtn) {
+                playBtn.disabled = true;
+                playBtn.textContent = "Play 🍏 (Login first)";
+            }
+            if (statusText) {
+                statusText.style.color = "#bdc3c7";
+                statusText.textContent = "Please log in with Google to play the beta!";
+            }
             if (googleBtn) googleBtn.style.display = "block";
         }
     });
 
-    if (googleBtn) {
-        googleBtn.addEventListener('click', () => {
-            const provider = new window.firebase.auth.GoogleAuthProvider();
-            auth.signInWithRedirect(provider).catch(e => { alert(e.message); });
-        });
-    }
+    window.login = function() {
+        const provider = new window.firebase.auth.GoogleAuthProvider();
+        auth.signInWithRedirect(provider).catch(e => { alert(e.message); });
+    };
 
     if (playBtn) {
         playBtn.addEventListener('click', () => { window.location.href = "game.html"; });
     }
-} else {
-    document.getElementById('menu-status-text').textContent = "Server Connection Error!";
-}
+};
