@@ -8,15 +8,7 @@ const firebaseConfig = {
   measurementId: "G-K3PL0CM2L7"
 };
 
-// Заставляем код дождаться полной загрузки HTML и всех CDN-библиотек Firebase
-window.addEventListener('DOMContentLoaded', () => {
-    
-    if (!window.firebase) {
-        console.error("Firebase library failed to load from CDN!");
-        return;
-    }
-
-    // Инициализируем только тогда, когда объект гарантированно создан в памяти
+if (window.firebase) {
     window.firebase.initializeApp(firebaseConfig);
     const auth = window.firebase.auth();
 
@@ -68,4 +60,10 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-});
+} else {
+    const statusText = document.getElementById('menu-status-text');
+    if (statusText) {
+        statusText.style.color = "#e74c3c";
+        statusText.textContent = "Critical: Connection to server blocked by network!";
+    }
+}
