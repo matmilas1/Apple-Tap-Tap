@@ -8,7 +8,7 @@ const firebaseConfig = {
   measurementId: "G-K3PL0CM2L7"
 };
 
-window.onload = function() {
+window.addEventListener('DOMContentLoaded', () => {
     if (!window.firebase) return;
 
     window.firebase.initializeApp(firebaseConfig);
@@ -49,8 +49,8 @@ window.onload = function() {
             if (playBtn) playBtn.style.display = "block";
             if (statusText) {
                 statusText.style.color = "#58a6ff";
-                let parts = user.email ? user.email.split('@') : ["Player"];
-                statusText.textContent = `Signed in as: ${parts[0]}. Launch the game below!`;
+                let parts = user.email ? user.email.split('@')[0] : "Player";
+                statusText.textContent = `Signed in as: ${parts}. Launch the game below!`;
             }
             if (authBtn) authBtn.textContent = "Sign out of account";
         } else {
@@ -105,4 +105,4 @@ window.onload = function() {
             window.location.href = "game.html";
         });
     }
-};
+});
