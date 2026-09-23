@@ -8,7 +8,12 @@ const firebaseConfig = {
   measurementId: "G-K3PL0CM2L7"
 };
 
-if (window.firebase) {
+window.onload = function() {
+    if (!window.firebase) {
+        console.error("Firebase waiting...");
+        return;
+    }
+
     window.firebase.initializeApp(firebaseConfig);
     const auth = window.firebase.auth();
 
@@ -61,6 +66,4 @@ if (window.firebase) {
             window.location.href = "game.html"; 
         });
     }
-} else {
-    console.error("Firebase object not found in window.");
-}
+};
