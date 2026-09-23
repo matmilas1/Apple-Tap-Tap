@@ -20,12 +20,20 @@ function ensureFirebase() {
 }
 
 window.login = function() {
-    ensureFirebase();
-    if (window.firebase && window.firebase.auth) {
-        const provider = new window.firebase.auth.GoogleAuthProvider();
-        window.firebase.auth().signInWithRedirect(provider).catch(e => { 
-            console.error("Login failed!", e);
-        });
+    if (ensureFirebase()) {
+        const firebaseAuth = window.firebase.auth;
+        const provider = new firebaseAuth.GoogleAuthProvider();
+        provider.addScope('profile');
+        provider.addScope('email');
+        window.firebase.auth().signInWithPopup(provider)
+            .then((result) => {
+                console.log("Success login:", result.user);
+            })
+            .catch(e => { 
+                alert("Login failed! " + e.message); 
+            });
+    } else {
+        alert("Loading... Please tap again in a second!");
     }
 };
 
@@ -38,10 +46,6 @@ window.addEventListener('DOMContentLoaded', () => {
         if (ensureFirebase()) {
             clearInterval(checkInterval);
             const auth = window.firebase.auth();
-
-            auth.getRedirectResult().catch((e) => { 
-                console.error("Redirect login error:", e); 
-            });
 
             auth.onAuthStateChanged((user) => {
                 if (user) {
@@ -75,3 +79,5 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+ensureFirebase();
