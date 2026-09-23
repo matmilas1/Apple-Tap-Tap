@@ -29,23 +29,15 @@ window.onload = function() {
     function switchMode(mode) {
         currentMode = mode;
         if (mode === "login") {
-            tabLogin.classList.add('active');
-            tabRegister.classList.remove('active');
-            labelUser.textContent = "Username";
-            authBtn.textContent = "Sign in";
-            if (!auth.currentUser) {
-                statusText.style.color = "#8b949e";
-                statusText.textContent = "Enter your username and password to play.";
-            }
+            if (tabLogin) tabLogin.classList.add('active');
+            if (tabRegister) tabRegister.classList.remove('active');
+            if (labelUser) labelUser.textContent = "Username";
+            if (authBtn && !auth.currentUser) authBtn.textContent = "Sign in";
         } else {
-            tabRegister.classList.add('active');
-            tabLogin.classList.remove('active');
-            labelUser.textContent = "Create Username";
-            authBtn.textContent = "Create account";
-            if (!auth.currentUser) {
-                statusText.style.color = "#8b949e";
-                statusText.textContent = "Choose a unique username and a safe password.";
-            }
+            if (tabRegister) tabRegister.classList.add('active');
+            if (tabLogin) tabLogin.classList.remove('active');
+            if (labelUser) labelUser.textContent = "Create Username";
+            if (authBtn && !auth.currentUser) authBtn.textContent = "Create account";
         }
     }
 
@@ -57,13 +49,12 @@ window.onload = function() {
             if (playBtn) playBtn.style.display = "block";
             if (statusText) {
                 statusText.style.color = "#58a6ff";
-                let showName = user.email ? user.email.split('@')[0] : "Player";
-                statusText.textContent = `Signed in as: ${showName}. Launch the game below!`;
+                let parts = user.email ? user.email.split('@') : ["Player"];
+                statusText.textContent = `Signed in as: ${parts[0]}. Launch the game below!`;
             }
             if (authBtn) authBtn.textContent = "Sign out of account";
         } else {
             if (playBtn) playBtn.style.display = "none";
-            if (authBtn) authBtn.textContent = currentMode === "login" ? "Sign in" : "Create account";
             switchMode(currentMode);
         }
     });
@@ -91,26 +82,19 @@ window.onload = function() {
 
             const cleanUser = rawUser.replace(/[^a-zA-Z0-9]/g, "");
             if (cleanUser.length < 3) {
-                alert("Username must be at least 3 characters (letters/numbers only)!");
+                alert("Username must be at least 3 characters!");
                 return;
             }
 
             const fakeEmail = `${cleanUser.toLowerCase()}@game.com`;
 
-            if (statusText) {
-                statusText.style.color = "#8b949e";
-                statusText.textContent = "Processing GitHub request...";
-            }
-
             if (currentMode === "login") {
                 auth.signInWithEmailAndPassword(fakeEmail, password).catch((err) => {
                     alert("Sign in failed! Check username or password.");
-                    switchMode("login");
                 });
             } else {
                 auth.createUserWithEmailAndPassword(fakeEmail, password).catch((err) => {
                     alert("Sign up failed! This username might be already taken.");
-                    switchMode("register");
                 });
             }
         });
