@@ -1,6 +1,6 @@
 const firebaseConfig = {
   apiKey: "AIzaSyCOceNGRA6w7Sjh_fZiENd6HSnp0Sr_-Wg",
-  authDomain: "apple-tap-tap-2df34.firebaseapp.com",
+  authDomain: "://firebaseapp.com",
   projectId: "apple-tap-tap-2df34",
   storageBucket: "apple-tap-tap-2df34.firebasestorage.app",
   messagingSenderId: "566834170805",
@@ -16,30 +16,60 @@ window.onload = function() {
 
     const userInput = document.getElementById('menu-username');
     const passwordInput = document.getElementById('menu-password');
-    const loginBtn = document.getElementById('menu-login-btn');
+    const authBtn = document.getElementById('menu-auth-btn');
     const playBtn = document.getElementById('menu-play-btn');
     const statusText = document.getElementById('menu-status-text');
+    
+    const tabLogin = document.getElementById('tab-login');
+    const tabRegister = document.getElementById('tab-register');
+    const labelUser = document.getElementById('label-user');
+
+    let currentMode = "login";
+
+    function switchMode(mode) {
+        currentMode = mode;
+        if (mode === "login") {
+            tabLogin.classList.add('active');
+            tabRegister.classList.remove('active');
+            labelUser.textContent = "Username";
+            authBtn.textContent = "Sign in";
+            if (!auth.currentUser) {
+                statusText.style.color = "#8b949e";
+                statusText.textContent = "Enter your username and password to play.";
+            }
+        } else {
+            tabRegister.classList.add('active');
+            tabLogin.classList.remove('active');
+            labelUser.textContent = "Create Username";
+            authBtn.textContent = "Create account";
+            if (!auth.currentUser) {
+                statusText.style.color = "#8b949e";
+                statusText.textContent = "Choose a unique username and a safe password.";
+            }
+        }
+    }
+
+    if (tabLogin) tabLogin.addEventListener('click', () => switchMode("login"));
+    if (tabRegister) tabRegister.addEventListener('click', () => switchMode("register"));
 
     auth.onAuthStateChanged((user) => {
         if (user) {
-            if (playBtn) playBtn.disabled = false;
+            if (playBtn) playBtn.style.display = "block";
             if (statusText) {
-                statusText.style.color = "#00ff88";
-                statusText.textContent = `Logged in as: ${user.email.split('@')[0]}! Ready to play.`;
+                statusText.style.color = "#58a6ff";
+                let showName = user.email ? user.email.split('@')[0] : "Player";
+                statusText.textContent = `Signed in as: ${showName}. Launch the game below!`;
             }
-            if (loginBtn) loginBtn.textContent = "Log Out ❌";
+            if (authBtn) authBtn.textContent = "Sign out of account";
         } else {
-            if (playBtn) playBtn.disabled = true;
-            if (statusText) {
-                statusText.style.color = "#bdc3c7";
-                statusText.textContent = "Enter your username and password to play!";
-            }
-            if (loginBtn) loginBtn.textContent = "Login / Sign Up 🍏";
+            if (playBtn) playBtn.style.display = "none";
+            if (authBtn) authBtn.textContent = currentMode === "login" ? "Sign in" : "Create account";
+            switchMode(currentMode);
         }
     });
 
-    if (loginBtn) {
-        loginBtn.addEventListener('click', () => {
+    if (authBtn) {
+        authBtn.addEventListener('click', () => {
             if (auth.currentUser) {
                 auth.signOut();
                 if (userInput) userInput.value = "";
@@ -67,31 +97,28 @@ window.onload = function() {
 
             const fakeEmail = `${cleanUser.toLowerCase()}@game.com`;
 
-            if (statusText) statusText.textContent = "Connecting...";
+            if (statusText) {
+                statusText.style.color = "#8b949e";
+                statusText.textContent = "Processing GitHub request...";
+            }
 
-            auth.signInWithEmailAndPassword(fakeEmail, password)
-                .catch((error) => {
-                    if (error.code === 'auth/user-not-found') {
-                        return auth.createUserWithEmailAndPassword(fakeEmail, password);
-                    } else {
-                        throw error;
-                    }
-                })
-                .catch((err) => {
-                    alert(err.message);
-                    if (statusText) {
-                        statusText.style.color = "#e74c3c";
-                        statusText.textContent = "Authentication failed!";
-                    }
+            if (currentMode === "login") {
+                auth.signInWithEmailAndPassword(fakeEmail, password).catch((err) => {
+                    alert("Sign in failed! Check username or password.");
+                    switchMode("login");
                 });
+            } else {
+                auth.createUserWithEmailAndPassword(fakeEmail, password).catch((err) => {
+                    alert("Sign up failed! This username might be already taken.");
+                    switchMode("register");
+                });
+            }
         });
     }
 
     if (playBtn) {
         playBtn.addEventListener('click', () => {
-            if (!playBtn.disabled) {
-                window.location.href = "game.html";
-            }
+            window.location.href = "game.html";
         });
     }
 };
