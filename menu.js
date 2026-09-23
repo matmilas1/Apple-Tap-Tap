@@ -9,61 +9,87 @@ const firebaseConfig = {
 };
 
 window.onload = function() {
-    if (!window.firebase) {
-        console.error("Firebase waiting...");
-        return;
-    }
+    if (!window.firebase) return;
 
     window.firebase.initializeApp(firebaseConfig);
     const auth = window.firebase.auth();
 
+    const emailInput = document.getElementById('menu-email');
+    const passwordInput = document.getElementById('menu-password');
+    const loginBtn = document.getElementById('menu-login-btn');
     const playBtn = document.getElementById('menu-play-btn');
-    const googleBtn = document.getElementById('menu-google-btn');
     const statusText = document.getElementById('menu-status-text');
-
-    auth.getRedirectResult().catch((e) => { 
-        console.error("Redirect error:", e); 
-    });
 
     auth.onAuthStateChanged((user) => {
         if (user) {
             if (playBtn) {
                 playBtn.disabled = false;
-                playBtn.textContent = "Play 🍏";
+                playBtn.style.backgroundColor = "#5B932C";
             }
             if (statusText) {
                 statusText.style.color = "#00ff88";
-                statusText.textContent = `Welcome, ${user.displayName || "Player"}! Click 'Play' to start the beta.`;
+                statusText.textContent = `Logged in successfully! Ready to play.`;
             }
-            if (googleBtn) googleBtn.style.display = "none";
+            if (loginBtn) loginBtn.textContent = "Log Out ❌";
         } else {
             if (playBtn) {
                 playBtn.disabled = true;
-                playBtn.textContent = "Play 🍏 (Login first)";
+                playBtn.style.backgroundColor = "#7f8c8d";
             }
             if (statusText) {
                 statusText.style.color = "#bdc3c7";
-                statusText.textContent = "Please log in with Google to play the beta!";
+                statusText.textContent = "Please log in or register to play the beta!";
             }
-            if (googleBtn) googleBtn.style.display = "block";
+            if (loginBtn) loginBtn.textContent = "Login / Sign Up 🍏";
         }
     });
 
-    if (googleBtn) {
-        googleBtn.addEventListener('click', () => {
-            const provider = new window.firebase.auth.GoogleAuthProvider();
-            provider.addScope('profile');
-            provider.addScope('email');
-            
-            auth.signInWithPopup(provider).catch(e => { 
-                alert("Login failed! " + e.message); 
-            });
+    if (loginBtn) {
+        loginBtn.addEventListener('click', () => {
+            if (auth.currentUser) {
+                auth.signOut();
+                if (emailInput) emailInput.value = "";
+                if (passwordInput) passwordInput.value = "";
+                return;
+            }
+
+            const email = emailInput ? emailInput.value.trim() : "";
+            const password = passwordInput ? passwordInput.value.trim() : "";
+
+            if (!email || !password) {
+                alert("Please fill in both fields!");
+                return;
+            }
+            if (password.length < 6) {
+                alert("Password must be at least 6 characters long!");
+                return;
+            }
+
+            if (statusText) statusText.textContent = "Processing...";
+
+            auth.signInWithEmailAndPassword(email, password)
+                .catch((error) => {
+                    if (error.code === 'auth/user-not-found') {
+                        return auth.createUserWithEmailAndPassword(email, password);
+                    } else {
+                        throw error;
+                    }
+                })
+                .catch((err) => {
+                    alert(err.message);
+                    if (statusText) {
+                        statusText.style.color = "#e74c3c";
+                        statusText.textContent = "Authentication failed!";
+                    }
+                });
         });
     }
 
     if (playBtn) {
-        playBtn.addEventListener('click', () => { 
-            window.location.href = "game.html"; 
+        playBtn.addEventListener('click', () => {
+            if (!playBtn.disabled) {
+                window.location.href = "game.html";
+            }
         });
     }
 };
