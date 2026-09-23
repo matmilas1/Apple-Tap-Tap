@@ -3,30 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apple TapTap - Main Menu</title>
+    <title>Sign in to Apple TapTap</title>
     <link rel="stylesheet" href="menu.css">
     <script src="https://cloudflare.com"></script>
     <script src="https://cloudflare.com"></script>
-    <script src="menu.js?v=30" defer></script>
+    <script src="menu.js?v=40" defer></script>
 </head>
 <body>
 
-    <div class="menu-overlay">
-        <div class="menu-content">
-            <img src="images/Apple tap tap.png" class="menu-logo" alt="Apple Tap-Tap">
-            
-            <div class="auth-box">
-                <input type="text" id="menu-username" class="menu-input" placeholder="Enter Username...">
-                <input type="password" id="menu-password" class="menu-input" placeholder="Enter Password...">
+    <div class="github-container">
+        <div class="github-logo-zone">
+            <img src="images/Apple tap tap.png" class="github-logo" alt="Logo">
+        </div>
+
+        <div class="github-card">
+            <div class="github-tabs">
+                <div id="tab-login" class="github-tab active">Sign in</div>
+                <div id="tab-register" class="github-tab">Sign up</div>
             </div>
 
-            <div class="menu-buttons">
-                <button id="menu-login-btn" class="menu-btn play">Login / Sign Up 🍏</button>
-                <button id="menu-play-btn" class="menu-btn start" disabled>Start Game ▶️</button>
+            <div class="github-form">
+                <div class="input-wrapper">
+                    <label id="label-user" class="input-label">Username</label>
+                    <input type="text" id="menu-username" class="github-input" placeholder="Username">
+                </div>
+
+                <div class="input-wrapper">
+                    <label class="input-label">Password</label>
+                    <input type="password" id="menu-password" class="github-input" placeholder="Password">
+                </div>
+
+                <button id="menu-auth-btn" class="github-btn">Sign in</button>
+                <button id="menu-play-btn" class="github-btn play-btn" style="display: none;">Launch Game ▶️</button>
             </div>
-            
-            <p id="menu-status-text">Enter your username and password to play!</p>
         </div>
+
+        <p id="menu-status-text" class="github-status">Please sign in or create an account to play beta.</p>
     </div>
 
 </body>
